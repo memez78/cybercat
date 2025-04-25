@@ -628,3 +628,36 @@ if ('serviceWorker' in navigator) {
     .then(reg => console.log('Service Worker registered'))
     .catch(err => console.error('Service Worker registration failed:', err));
 }
+
+function showFinalSummary() {
+  chatScreen.classList.add('fade-out');
+  setTimeout(() => {
+    chatScreen.classList.add('hidden');
+    summaryScreen.classList.remove('hidden');
+    summaryScreen.classList.add('fade-in');
+    document.getElementById('finalScore').textContent = `${securityScore}/100`;
+    document.getElementById('userSummaryName').textContent = userName;
+  }, 500);
+}
+
+function restartChat() {
+  // Reset everything
+  securityScore = 0;
+  askedQuestions = [];
+  scoreDisplay.textContent = '0/100';
+  progressBar.style.width = '0%';
+  nameInput.value = '';
+  ageInput.value = '';
+  chatDiv.innerHTML = '';
+  summaryScreen.classList.add('fade-out');
+  setTimeout(() => {
+    summaryScreen.classList.add('hidden');
+    welcomeScreen.classList.remove('hidden');
+    welcomeScreen.classList.add('fade-in');
+  }, 500);
+}
+
+
+
+
+
