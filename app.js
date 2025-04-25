@@ -13,10 +13,17 @@ const closeInstall = document.getElementById('closeInstall');
 const progressBar = document.getElementById('securityProgress');
 const scoreDisplay = document.getElementById('scoreDisplay');
 
+// State variables
 let userName = '', userAge = 0, securityScore = 0;
 let deferredPrompt;
 let model; // TensorFlow.js QnA model
 let userAgeGroup = 'adult'; // Default age group
+let askedQuestions = [];
+let conversationState = {
+  currentTopic: null,
+  topicsCovered: [],
+  depth: 0
+};
 
 // Fallback responses organized by age group
 const fallbackResponses = {
@@ -154,6 +161,7 @@ startBtn.addEventListener('click', () => {
     initializeChat(safeName, userAgeGroup);
   }, 500);
 });
+
 // 3. Initialize Chat with appropriate greeting
 function initializeChat(name, ageGroup) {
   let greeting = '';
@@ -182,28 +190,49 @@ function initializeChat(name, ageGroup) {
   
   // Ask first question based on age group
   setTimeout(() => {
-    askQuestion(ageGroup);
+    const initialTopic = ageGroup === 'child' ? 'online_safety' : 
+                        ageGroup === 'teen' ? 'social_media' : 
+                        ageGroup === 'adult' ? 'passwords' : 'scams';
+    askQuestion(ageGroup, initialTopic);
   }, 1000);
 }
 
-
-// 4. Ask question based on age group
-function askQuestion(ageGroup) {
+// 4. Ask question based on age group and topic
+function askQuestion(ageGroup, topic) {
   let question = '';
-  let topic = '';
+  
+  // Update conversation state
+  conversationState.currentTopic = topic;
+  conversationState.depth = 0;
   
   if (ageGroup === 'child') {
-    question = 'Do you know what to do when you see colorful pop-ups or ads while playing games online?';
-    topic = 'online_safety';
+    const childQuestions = {
+      online_safety: 'Do you know what to do when you see colorful pop-ups or ads while playing games online?',
+      passwords: 'Do you know why we use passwords for our games and apps?',
+      updates: 'Do you know why your tablet or computer sometimes asks to update?'
+    };
+    question = childQuestions[topic] || childQuestions.online_safety;
   } else if (ageGroup === 'teen') {
-    question = 'Do you check privacy settings on your social media accounts?';
-    topic = 'social_media';
+    const teenQuestions = {
+      social_media: 'Do you check privacy settings on your social media accounts?',
+      passwords: 'Do you use different passwords for different accounts?',
+      privacy: 'Do you think about what information apps collect about you?'
+    };
+    question = teenQuestions[topic] || teenQuestions.social_media;
   } else if (ageGroup === 'adult') {
-    question = 'Do you use different passwords for your important accounts?';
-    topic = 'passwords';
+    const adultQuestions = {
+      passwords: 'Do you use different passwords for your important accounts?',
+      phishing: 'Have you ever received suspicious emails claiming to be from your bank?',
+      updates: 'Do you regularly update your devices and software?'
+    };
+    question = adultQuestions[topic] || adultQuestions.passwords;
   } else {
-    question = 'Are you familiar with how to spot email or phone scams?';
-    topic = 'scams';
+    const seniorQuestions = {
+      scams: 'Are you familiar with how to spot email or phone scams?',
+      passwords: 'Do you have a safe way to remember your passwords?',
+      privacy: 'Do you check privacy settings on websites you use?'
+    };
+    question = seniorQuestions[topic] || seniorQuestions.scams;
   }
   
   addBotMessage(question);
@@ -223,6 +252,10 @@ function askQuestion(ageGroup) {
 
 // 5. Handle user response
 function handleUserResponse(response, topic) {
+  // Update conversation state
+  conversationState.currentTopic = topic;
+  conversationState.depth++;
+  
   // Remove response buttons
   const responseButtons = document.querySelector('.response-buttons');
   if (responseButtons) {
@@ -243,11 +276,11 @@ function handleUserResponse(response, topic) {
   let question = '';
   
   if (response === 'yes') {
-    question = `What are some other important things to know about ${topic}?`;
+    question = `What are some advanced tips about ${topic}?`;
   } else if (response === 'no') {
-    question = `Why is ${topic} important and what should I do about it?`;
+    question = `Why is ${topic} important and what are the basics I should know?`;
   } else {
-    question = `What are the most important tips about ${topic} that I should follow?`;
+    question = `What are the most important things about ${topic} that I should focus on?`;
   }
   
   // Show thinking animation
@@ -255,7 +288,6 @@ function handleUserResponse(response, topic) {
   
   // Generate response after a short delay
   setTimeout(async () => {
-    // Remove thinking animation
     const thinkingElement = document.querySelector('.thinking');
     if (thinkingElement) {
       thinkingElement.remove();
@@ -272,7 +304,15 @@ function handleUserResponse(response, topic) {
     
     // Ask a follow-up question after a delay
     setTimeout(() => {
-      askFollowUpQuestion(userAgeGroup);
+      if (conversationState.depth < 2) {
+        // Continue with current topic
+        askFollowUpQuestion(userAgeGroup, topic);
+      } else {
+        // Move to a new topic
+        askNewTopicQuestion(userAgeGroup);
+        conversationState.depth = 0;
+        conversationState.topicsCovered.push(topic);
+      }
     }, 1500);
   }, 1500);
 }
@@ -456,37 +496,98 @@ function getSecurityContext(topic, ageGroup) {
   `;
 }
 
-// 11. Ask follow-up question
-function askFollowUpQuestion(ageGroup) {
-  const questions = {
-    child: [
-      "Do you know what personal information you should never share online?",
-      "Has anyone online ever asked you for your name, age, or where you live?",
-      "Do you know who to talk to if something online makes you feel uncomfortable?"
-    ],
-    teen: [
-      "Do you think about how your posts might affect you later in life?",
-      "Have you ever received a message from someone you don't know?",
-      "Do you know how to check if a website is secure before entering information?"
-    ],
-    adult: [
-      "Do you use different passwords for your important accounts?",
-      "Have you ever received suspicious emails claiming to be from your bank?",
-      "Do you regularly back up your important data?"
-    ],
-    senior: [
-      "Have you ever received calls claiming to be from tech support?",
-      "Do you verify the identity of people who contact you asking for information?",
-      "Have you shared your online account access with anyone?"
-    ]
+// 11. Ask follow-up question within the same topic
+function askFollowUpQuestion(ageGroup, topic) {
+  const followUpQuestions = {
+    child: {
+      online_safety: [
+        "Has anyone online ever asked you for your name or where you live?",
+        "Do you know who to tell if something online makes you feel uncomfortable?",
+        "What would you do if a game asked for your parents' credit card?"
+      ],
+      passwords: [
+        "Do you know why we shouldn't share passwords with friends?",
+        "What would you do if someone guessed your password?",
+        "How often do you think you should change your passwords?"
+      ],
+      updates: [
+        "Do you know what happens if you don't update your device?",
+        "Have you ever seen an update message on your tablet or phone?",
+        "Why do you think updates make your device safer?"
+      ]
+    },
+    teen: {
+      social_media: [
+        "Have you ever regretted something you posted online?",
+        "Do you know how to report inappropriate content on social media?",
+        "How do you decide who to accept friend requests from?"
+      ],
+      passwords: [
+        "Do you use any tricks to remember your passwords?",
+        "Have you ever had an account hacked because of a weak password?",
+        "What do you think makes a password really strong?"
+      ],
+      privacy: [
+        "Do you read privacy policies before using new apps?",
+        "How do you decide which apps get access to your location?",
+        "Have you ever stopped using an app because of privacy concerns?"
+      ]
+    },
+    adult: {
+      passwords: [
+        "Do you use a password manager or write down your passwords?",
+        "Have you ever had to recover a forgotten password?",
+        "What's your strategy for creating strong passwords?"
+      ],
+      phishing: [
+        "Have you ever received a suspicious email that looked real?",
+        "What red flags do you look for in potential phishing emails?",
+        "Do you verify senders before clicking links in emails?"
+      ],
+      updates: [
+        "Do you set your devices to update automatically?",
+        "Have you ever delayed an update and regretted it?",
+        "How do you decide which updates are important?"
+      ]
+    },
+    senior: {
+      scams: [
+        "Have you ever received a suspicious phone call asking for information?",
+        "What would you do if someone called claiming to be from tech support?",
+        "How do you verify if a caller is really from your bank?"
+      ],
+      passwords: [
+        "Do you have a system for remembering your passwords?",
+        "Have you ever shared a password with a family member?",
+        "What do you do if you forget an important password?"
+      ],
+      privacy: [
+        "Do you check privacy settings on websites you use?",
+        "Have you ever adjusted your browser's privacy settings?",
+        "What personal information do you avoid sharing online?"
+      ]
+    }
   };
+
+  // Filter out already asked questions
+  const availableQuestions = followUpQuestions[ageGroup][topic].filter(q => 
+    !askedQuestions.includes(q)
+  );
+
+  // If we've asked all questions, reset the tracking
+  if (availableQuestions.length === 0) {
+    askedQuestions = [];
+    availableQuestions = [...followUpQuestions[ageGroup][topic]];
+  }
+
+  // Select a random question from remaining ones
+  const randomQuestion = availableQuestions[
+    Math.floor(Math.random() * availableQuestions.length)
+  ];
   
-  const ageQuestions = questions[ageGroup] || questions.adult;
-  const randomQuestion = ageQuestions[Math.floor(Math.random() * ageQuestions.length)];
-  const topic = (ageGroup === 'child') ? 'online_safety' : 
-                (ageGroup === 'teen') ? 'privacy' : 
-                (ageGroup === 'adult') ? 'phishing' : 'scams';
-  
+  // Track the asked question
+  askedQuestions.push(randomQuestion);
+
   // Add the follow-up question
   addBotMessage(randomQuestion);
   
@@ -503,57 +604,68 @@ function askFollowUpQuestion(ageGroup) {
   chatDiv.scrollTop = chatDiv.scrollHeight;
 }
 
-// 12. Generate AI response
-async function getAIResponse(question, context, topic) {
-  if (!model) {
-    // If AI model isn't available, use fallback responses
-    console.log('AI model not available, using fallback');
-    const ageGroupResponses = fallbackResponses[userAgeGroup] || fallbackResponses.adult;
-    const topicResponses = ageGroupResponses[topic] || [
-      "That's an important security consideration. Make sure to follow best practices!",
-      "Staying safe online means being vigilant about your digital security.",
-      "I recommend learning more about this security topic to protect yourself better."
-    ];
-    return topicResponses[Math.floor(Math.random() * topicResponses.length)];
+// 12. Ask a new topic question
+function askNewTopicQuestion(ageGroup) {
+  const availableTopics = Object.keys(fallbackResponses[ageGroup])
+    .filter(topic => !conversationState.topicsCovered.includes(topic));
+  
+  if (availableTopics.length === 0) {
+    // All topics covered, start over
+    conversationState.topicsCovered = [];
+    availableTopics = Object.keys(fallbackResponses[ageGroup]);
   }
   
-  try {
-    console.log('Asking AI:', question);
-    console.log('Context:', context);
-    
-    // Use the QnA model to find an answer based on the context
-    const answers = await model.findAnswers(question, context);
-    
-    console.log('AI answers:', answers);
-    
-    if (answers && answers.length > 0) {
-      // If we got valid answers, use the best one
-      return answers[0].text;
-    } else {
-      // Fall back to predefined responses if no good answer
-      const ageGroupResponses = fallbackResponses[userAgeGroup] || fallbackResponses.adult;
-      const topicResponses = ageGroupResponses[topic] || [
-        "That's an important security consideration. Make sure to follow best practices!",
-        "Staying safe online means being vigilant about your digital security.",
-        "I recommend learning more about this security topic to protect yourself better."
-      ];
-      return topicResponses[Math.floor(Math.random() * topicResponses.length)];
-    }
-  } catch (error) {
-    console.error('AI response error:', error);
-    
-    // Use fallback if there's an error
-    const ageGroupResponses = fallbackResponses[userAgeGroup] || fallbackResponses.adult;
-    const topicResponses = ageGroupResponses[topic] || [
-      "I'm having trouble processing that. Let's talk about a different security topic!",
-      "That's a good question about cybersecurity. The important thing is to stay vigilant.",
-      "Internet security is all about being proactive and aware of potential threats."
-    ];
-    return topicResponses[Math.floor(Math.random() * topicResponses.length)];
-  }
+  const nextTopic = availableTopics[0]; // Select the next topic in order
+  askQuestion(ageGroup, nextTopic);
 }
 
-// 13. Update security score
+// 13. Generate AI response
+async function getAIResponse(question, context, topic) {
+  // First try to use the AI model if available
+  if (model) {
+    try {
+      const answers = await model.findAnswers(question, context);
+      
+      // Only use the answer if it has a high enough confidence score
+      if (answers && answers.length > 0 && answers[0].score > 0.5) {
+        return answers[0].text;
+      }
+    } catch (error) {
+      console.error('AI response error:', error);
+    }
+  }
+
+  // Enhanced fallback system
+  const ageGroupResponses = fallbackResponses[userAgeGroup] || fallbackResponses.adult;
+  const topicResponses = ageGroupResponses[topic] || [];
+  
+  // Find the most relevant fallback response
+  const keywordMap = {
+    'password': ['password', 'login', 'account'],
+    'online_safety': ['safe', 'pop-up', 'ad', 'game'],
+    'social_media': ['social', 'media', 'post', 'privacy'],
+    'phishing': ['email', 'scam', 'link', 'phishing'],
+    'updates': ['update', 'software', 'patch'],
+    'scams': ['scam', 'call', 'fake', 'fraud']
+  };
+
+  // Find responses containing relevant keywords
+  const keywords = keywordMap[topic] || [topic];
+  const relevantResponses = topicResponses.filter(response => 
+    keywords.some(keyword => 
+      response.toLowerCase().includes(keyword)
+  );
+
+  // Use a relevant response if found, otherwise random
+  if (relevantResponses.length > 0) {
+    return relevantResponses[Math.floor(Math.random() * relevantResponses.length)];
+  }
+  
+  return topicResponses[Math.floor(Math.random() * topicResponses.length)] || 
+    "That's an important security consideration. Let me think more about that...";
+}
+
+// 14. Update security score
 function updateScore(points) {
   securityScore += points;
   if (securityScore > 100) securityScore = 100;
@@ -577,18 +689,39 @@ function updateScore(points) {
   }
 }
 
-// 14. Load AI model
+// 15. Load AI model
 async function loadModel() {
   try {
     console.log('Loading AI model...');
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.id = 'modelLoading';
+    loadingIndicator.textContent = 'Loading AI security knowledge...';
+    document.body.appendChild(loadingIndicator);
+    
     model = await qna.load();
     console.log('AI model loaded successfully.');
+    
+    // Remove loading indicator
+    document.getElementById('modelLoading').remove();
   } catch (error) {
     console.error('Failed to load AI model:', error);
+    // Show error message
+    const errorElement = document.createElement('div');
+    errorElement.id = 'modelError';
+    errorElement.textContent = 'AI model failed to load, using basic security tips';
+    document.body.appendChild(errorElement);
+    
+    // Remove error message after 5 seconds
+    setTimeout(() => {
+      if (document.getElementById('modelError')) {
+        document.getElementById('modelError').remove();
+      }
+    }, 5000);
   }
 }
 
-// 15. PWA Install Prompt
+// 16. PWA Install Prompt
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
@@ -610,7 +743,7 @@ installBtn.onclick = () => {
 
 closeInstall.onclick = () => installPrompt.classList.add('hidden');
 
-// 16. Request notifications permission after user interaction
+// 17. Request notifications permission after user interaction
 startBtn.addEventListener('click', () => {
   if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
     setTimeout(() => {
@@ -619,7 +752,7 @@ startBtn.addEventListener('click', () => {
   }
 });
 
-// 17. Register Service Worker
+// 18. Register Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js')
     .then(reg => console.log('Service Worker registered'))
