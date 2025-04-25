@@ -480,12 +480,15 @@ function askFollowUpQuestion(ageGroup) {
       "Have you shared your online account access with anyone?"
     ]
   };
-  
-  const ageQuestions = questions[ageGroup] || questions.adult;
-  const randomQuestion = ageQuestions[Math.floor(Math.random() * ageQuestions.length)];
-  const topic = (ageGroup === 'child') ? 'online_safety' : 
-                (ageGroup === 'teen') ? 'privacy' : 
-                (ageGroup === 'adult') ? 'phishing' : 'scams';
+
+  const availableQuestions = questions[ageGroup].filter(q => !askedQuestions.includes(q));
+ if (availableQuestions.length === 0) {
+    showFinalSummary(); // New function to show score/dashboard
+    return;
+  }
+
+  const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+  askedQuestions.push(randomQuestion);
   
   // Add the follow-up question
   addBotMessage(randomQuestion);
