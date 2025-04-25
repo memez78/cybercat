@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cyber Cat Security Coach: Learn cybersecurity in a fun, interactive way">
+  <meta name="theme-color" content="#4CAF50">
+  <title>Cyber Cat Security Coach</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Install Prompt Overlay -->
+  <div id="installPrompt" class="overlay hidden">
+    <div class="prompt-card">
+      <h3>Install Cyber Cat</h3>
+      <p>Install this app on your device for quick access and offline use!</p>
+      <div class="button-group">
+        <button id="installButton">Install Now</button>
+        <button id="closeInstall">Not Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="screen">
+    <div class="welcome-container">
+      <div class="logo-container">
+        <img src="cyber_cat.png" alt="Cyber Cat" class="welcome-logo bounce">
+      </div>
+      <h1>Welcome to Cyber Cat!</h1>
+      <p class="welcome-text">Your friendly AI cybersecurity coach that helps you stay safe online</p>
+      <button id="continueBtn" class="primary-button">Get Started</button>
+    </div>
+  </div>
+
+  <!-- Name & Age Screen -->
+  <div id="nameScreen" class="screen hidden">
+    <div class="form-container">
+      <h2>Let's get to know you</h2>
+      <p>I'll customize security advice based on your information</p>
+      
+      <div class="input-group">
+        <label for="name">What's your name?</label>
+        <input type="text" id="name" placeholder="Enter your name">
+        <span id="nameError" class="error hidden"></span>
+      </div>
+      
+      <div class="input-group">
+        <label for="age">How old are you?</label>
+        <input type="number" id="age" placeholder="Enter your age" min="1" max="120">
+        <span id="ageError" class="error hidden"></span>
+      </div>
+      
+      <button id="startBtn" class="primary-button">Start Chatting</button>
+    </div>
+  </div>
+
+  <!-- Chat Screen -->
+  <div id="chatScreen" class="screen hidden">
+    <div class="chat-container">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="avatar-container">
+          <img id="chatAvatar" src="cyber_cat.png" alt="Cyber Cat">
+        </div>
+        <div class="header-text">
+          <h2>Cyber Cat</h2>
+          <div class="security-score">
+            <div class="progress-container">
+              <div id="securityProgress" class="progress-bar"></div>
+            </div>
+            <span id="scoreDisplay">0/100</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chat Messages -->
+      <div id="chatMessages" class="messages-container"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna@1.0.0/dist/qna.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
