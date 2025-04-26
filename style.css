@@ -627,9 +627,6 @@ body {
   animation: securityScan 3s infinite;
 }
 
-
-
-
 /* ===== Modern Utility Classes ===== */
 .hidden {
   display: none !important;
