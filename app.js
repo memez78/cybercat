@@ -101,11 +101,6 @@ function requestNotificationPermission() {
   }
 }
 
-
-
-
-
-
 // Security missions data structure
 const missions = {
   passwords: {
@@ -507,30 +502,13 @@ function handleAgeSubmit() {
     transitionToScreen(ageScreen, userDashboard);
     initializeUserDashboard();
   }
-  
-  // Show notification prompt after a delay
-  setTimeout(() => {
-    if (!isNotificationPromptShown && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-      notificationPrompt.classList.remove('hidden');
-      isNotificationPromptShown = true;
-    }
-  }, 5000);
-  
-  // Show install banner for PWA after a delay
-  setTimeout(() => {
-    if (!isInstallPromptShown && deferredPrompt) {
-      installBanner.classList.remove('hidden');
-      isInstallPromptShown = true;
-    }
-  }, 10000);
 }
 
 // Initialize parent dashboard
 function initializeParentDashboard() {
-
-const score = calculateChildScore();
-const completed = countCompletedMissions();
-const time = calculateTimeSpent();
+  const score = calculateChildScore();
+  const completed = countCompletedMissions();
+  const time = calculateTimeSpent();
   
   parentScoreDisplay.textContent = `${score}/100`;
   parentProgressBar.style.width = `${score}%`;
@@ -815,7 +793,6 @@ function handleMissionResponse(missionId, taskIndex, response) {
     }, 2000);
   }, 1500);
 }
-
 
 // Complete mission
 function completeMission(missionId) {
@@ -1117,13 +1094,6 @@ function getFallbackResponse(category) {
   return genericTips[category] || 
     "That's an interesting question! Cybersecurity is all about being careful and thinking before you act online.";
 }
-
-
-
-
-
-
-
 
 // Request notification permission
 function requestNotificationPermission() {
