@@ -10,6 +10,7 @@
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Install Prompt Overlay -->
@@ -24,40 +25,44 @@
     </div>
   </div>
 
- <!-- Welcome Screen -->
-<div id="welcomeScreen" class="screen">
-  <div class="welcome-container">
-    <div class="logo-container">
-      <img src="cyber_cat.png" alt="Cyber Cat" class="welcome-logo bounce">
-      <div class="scanning-effect"></div>
-    </div>
-    <h1>Welcome to Cyber Cat!</h1>
-    <p class="welcome-text">Your friendly AI security coach that makes learning cybersecurity fun!</p>
-    
-    <div class="intro-animation">
-      <div class="intro-message">Loading security protocols...</div>
-      <div class="loading-bar">
-        <div class="loading-progress"></div>
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="screen">
+    <div class="welcome-container">
+      <div class="logo-container">
+        <img src="cyber_cat.png" alt="Cyber Cat" class="welcome-logo bounce">
+        <div class="scanning-effect"></div>
+        <div class="tech-circle"></div>
+      </div>
+      
+      <div class="welcome-content">
+        <h1>Welcome to Cyber Cat!</h1>
+        <p class="welcome-text">Your friendly AI security coach that makes learning cybersecurity fun!</p>
+        
+        <div class="intro-animation">
+          <div class="intro-message">Loading security protocols...</div>
+          <div class="loading-bar">
+            <div class="loading-progress"></div>
+          </div>
+        </div>
+        
+        <div class="user-selection">
+          <button id="normalUserBtn" class="selection-button pulse">
+            <span class="button-icon">🎮</span>
+            <span class="button-text">Play & Learn</span>
+            <span class="button-subtext">For teens and adults</span>
+          </button>
+          
+          <button id="parentBtn" class="selection-button pulse">
+            <span class="button-icon">👪</span>
+            <span class="button-text">Parent Setup</span>
+            <span class="button-subtext">Configure for your child</span>
+          </button>
+        </div>
       </div>
     </div>
-    
-    <div class="user-selection">
-      <button id="normalUserBtn" class="selection-button pulse">
-        <span class="button-icon">🎮</span>
-        <span class="button-text">Play & Learn</span>
-        <span class="button-subtext">For teens and adults</span>
-      </button>
-      
-      <button id="parentBtn" class="selection-button pulse">
-        <span class="button-icon">👪</span>
-        <span class="button-text">Parent Setup</span>
-        <span class="button-subtext">Configure for your child</span>
-      </button>
-    </div>
   </div>
-</div>
 
-  <!-- Name & Age Screen -->
+  <!-- Name Screen -->
   <div id="nameScreen" class="screen hidden">
     <div class="form-container">
       <h2>Let's get to know you</h2>
@@ -68,244 +73,285 @@
         <input type="text" id="name" placeholder="Enter your name">
         <span id="nameError" class="error hidden"></span>
       </div>
-      
-      <div id="ageScreen" class="screen hidden">
-        <div class="form-container">
-          <h2>How old are you?</h2>
-          <p>I'll personalize security advice just for you</p>
-          
-          <div class="age-selection">
-            <button class="age-button" data-age="child">Under 13</button>
-            <button class="age-button" data-age="teen">13-19</button>
-            <button class="age-button" data-age="adult">20-59</button>
-            <button class="age-button" data-age="senior">60+</button>
-          </div>
-          
-          <button id="ageSubmitBtn" class="primary-button disabled">Continue</button>
-        </div>
-      </div>
-      
-      <!-- Add the Parent Dashboard Screen -->
-      <div id="parentDashboard" class="screen hidden">
-        <div class="dashboard-container">
-          <div class="dashboard-header">
-            <div class="avatar-container">
-              <img src="cyber_cat.png" alt="Cyber Cat">
-            </div>
-            <div class="header-text">
-              <h2>Parent Dashboard</h2>
-              <span class="mode-indicator">Parent Mode</span>
-            </div>
-            <button id="parentChatBtn" class="primary-button">Chat with Assistant</button>
-          </div>
-          
-          <div class="dashboard-content">
-            <h2>Child's Learning Progress</h2>
-            
-            <div class="dashboard-stat-grid">
-              <div class="stat-card">
-                <div class="stat-title">OVERALL SECURITY SCORE</div>
-                <div class="stat-value" id="parentScoreDisplay">0/100</div>
-                <div class="stat-progress">
-                  <div id="parentProgressBar" class="stat-bar" style="width: 0%"></div>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <div class="stat-title">MISSIONS COMPLETED</div>
-                <div class="stat-value" id="missionsCompleted">0/5</div>
-                <div class="stat-progress">
-                  <div id="missionProgressBar" class="stat-bar" style="width: 0%"></div>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <div class="stat-title">TIME SPENT LEARNING</div>
-                <div class="stat-value" id="timeSpent">0 min</div>
-              </div>
-            </div>
-            
-            <h2>Security Risk Assessment</h2>
-            <p>These areas may need your guidance:</p>
-            
-            <ul class="risk-list">
-              <li class="risk-item risk-high">
-                <div class="risk-header">
-                  <span class="risk-title">Password Sharing</span>
-                  <span class="risk-badge badge-high">High Risk</span>
-                </div>
-                <p>Your child may be sharing passwords with friends. Talk to them about why this is dangerous.</p>
-              </li>
-              
-              <li class="risk-item risk-medium">
-                <div class="risk-header">
-                  <span class="risk-title">App Permissions</span>
-                  <span class="risk-badge badge-medium">Medium Risk</span>
-                </div>
-                <p>Some apps on your child's devices have excessive permissions. Review these together.</p>
-              </li>
-              
-              <li class="risk-item risk-low">
-                <div class="risk-header">
-                  <span class="risk-title">Screen Time</span>
-                  <span class="risk-badge badge-low">Low Risk</span>
-                </div>
-                <p>Your child's screen time is within reasonable limits, but continue to monitor usage.</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Add the User Dashboard Screen -->
-      <div id="userDashboard" class="screen hidden">
-        <div class="dashboard-container">
-          <div class="dashboard-header">
-            <div class="avatar-container">
-              <img id="dashboardAvatar" src="cyber_cat.png" alt="Cyber Cat">
-            </div>
-            <div class="header-text">
-              <h2>Security Missions</h2>
-              <div class="security-score">
-                <div class="progress-container">
-                  <div id="dashboardProgress" class="progress-bar"></div>
-                </div>
-                <span id="dashboardScore">0/100</span>
-              </div>
-            </div>
-            <button id="chatButton" class="primary-button">Chat with Assistant</button>
-          </div>
-          
-          <div class="dashboard-content">
-            <div class="mission-grid">
-              <!-- Password Mission -->
-              <div class="mission-card" data-mission="passwords">
-                <div class="mission-image">🔑</div>
-                <div class="mission-content">
-                  <h3 class="mission-title">Password Protector</h3>
-                  <p class="mission-desc">Learn how to create strong passwords and keep your accounts secure.</p>
-                  <div class="mission-status">
-                    <span>0% Complete</span>
-                    <span>0/3 Tasks</span>
-                  </div>
-                  <div class="mission-progress">
-                    <div class="mission-progress-bar" style="width: 0%"></div>
-                  </div>
-                  <button class="mission-action">Start Mission</button>
-                </div>
-              </div>
-              
-              <!-- Privacy Mission -->
-              <div class="mission-card" data-mission="privacy">
-                <div class="mission-image">🛡️</div>
-                <div class="mission-content">
-                  <h3 class="mission-title">Privacy Guardian</h3>
-                  <p class="mission-desc">Discover how to protect your personal information online.</p>
-                  <div class="mission-status">
-                    <span>0% Complete</span>
-                    <span>0/3 Tasks</span>
-                  </div>
-                  <div class="mission-progress">
-                    <div class="mission-progress-bar" style="width: 0%"></div>
-                  </div>
-                  <button class="mission-action">Start Mission</button>
-                </div>
-              </div>
-              
-              <!-- Phishing Mission -->
-              <div class="mission-card" data-mission="phishing">
-                <div class="mission-image">🎣</div>
-                <div class="mission-content">
-                  <h3 class="mission-title">Phishing Detective</h3>
-                  <p class="mission-desc">Learn to identify and avoid phishing attempts and scams.</p>
-                  <div class="mission-status">
-                    <span>0% Complete</span>
-                    <span>0/3 Tasks</span>
-                  </div>
-                  <div class="mission-progress">
-                    <div class="mission-progress-bar" style="width: 0%"></div>
-                  </div>
-                  <button class="mission-action">Start Mission</button>
-                </div>
-              </div>
-              
-              <!-- Updates Mission -->
-              <div class="mission-card" data-mission="updates">
-                <div class="mission-image">🔄</div>
-                <div class="mission-content">
-                  <h3 class="mission-title">Update Master</h3>
-                  <p class="mission-desc">Understand why updates are important for your security.</p>
-                  <div class="mission-status">
-                    <span>0% Complete</span>
-                    <span>0/3 Tasks</span>
-                  </div>
-                  <div class="mission-progress">
-                    <div class="mission-progress-bar" style="width: 0%"></div>
-                  </div>
-                  <button class="mission-action">Start Mission</button>
-                </div>
-              </div>
-              
-              <!-- Online Safety Mission -->
-              <div class="mission-card" data-mission="online_safety">
-                <div class="mission-image">🔍</div>
-                <div class="mission-content">
-                  <h3 class="mission-title">Safe Explorer</h3>
-                  <p class="mission-desc">Navigate the web safely and avoid dangerous content.</p>
-                  <div class="mission-status">
-                    <span>0% Complete</span>
-                    <span>0/3 Tasks</span>
-                  </div>
-                  <div class="mission-progress">
-                    <div class="mission-progress-bar" style="width: 0%"></div>
-                  </div>
-                  <button class="mission-action">Start Mission</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Notification Permission Prompt -->
-      <div id="notificationPrompt" class="notification-prompt hidden">
-        <div class="notification-icon">🔔</div>
-        <div class="notification-content">
-          <div class="notification-title">Stay Updated!</div>
-          <p>Enable notifications to receive security tips and track your progress</p>
-          <div class="notification-actions">
-            <button class="notification-accept" id="notificationAccept">Enable</button>
-            <button class="notification-dismiss" id="notificationDismiss">Not Now</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- PWA Install Banner -->
-      <div id="installBanner" class="install-banner hidden">
-        <div class="install-content">
-          <div class="install-icon">📱</div>
-          <div class="install-text">
-            <h3>Install Cyber Cat</h3>
-            <p>Add to your home screen for the best experience</p>
-          </div>
-        </div>
-        <div class="install-actions">
-          <button id="installBannerBtn" class="notification-accept">Install</button>
-          <button id="closeBanner" class="notification-dismiss">Later</button>
-        </div>
-      </div>
+    </div>
+  </div>
 
+  <!-- Age Screen -->
+  <div id="ageScreen" class="screen hidden">
+    <div class="form-container">
+      <div class="age-header">
+        <img src="cyber_cat.png" alt="Cyber Cat" class="age-avatar">
+        <h2>How old are you?</h2>
+        <p>I'll personalize security advice just for you</p>
+      </div>
+      
+      <div class="age-selection">
+        <button class="age-button" data-age="child">
+          <span class="age-icon">👶</span>
+          <span class="age-text">Under 13</span>
+          <span class="age-desc">Fun games & simple tips</span>
+        </button>
+        
+        <button class="age-button" data-age="teen">
+          <span class="age-icon">👦</span>
+          <span class="age-text">13-19</span>
+          <span class="age-desc">Social media & gaming safety</span>
+        </button>
+        
+        <button class="age-button" data-age="adult">
+          <span class="age-icon">👨</span>
+          <span class="age-text">20-59</span>
+          <span class="age-desc">Work & personal security</span>
+        </button>
+        
+        <button class="age-button" data-age="senior">
+          <span class="age-icon">👴</span>
+          <span class="age-text">60+</span>
+          <span class="age-desc">Scam prevention & basics</span>
+        </button>
+      </div>
+      
+      <button id="ageSubmitBtn" class="primary-button disabled">Continue</button>
+    </div>
+  </div>
 
-
+  <!-- Add the Parent Dashboard Screen -->
+  <div id="parentDashboard" class="screen hidden">
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <div class="avatar-container">
+          <img src="cyber_cat.png" alt="Cyber Cat">
+        </div>
+        <div class="header-text">
+          <h2>Parent Dashboard</h2>
+          <span class="mode-indicator">Parent Mode</span>
+        </div>
+        <button id="parentChatBtn" class="primary-button">Chat with Assistant</button>
+      </div>
+      
+      <div class="dashboard-content">
+        <h2>Child's Learning Progress</h2>
+        
+        <div class="dashboard-stat-grid">
+          <div class="stat-card">
+            <div class="stat-title">OVERALL SECURITY SCORE</div>
+            <div class="stat-value" id="parentScoreDisplay">0/100</div>
+            <div class="stat-progress">
+              <div id="parentProgressBar" class="stat-bar" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-title">MISSIONS COMPLETED</div>
+            <div class="stat-value" id="missionsCompleted">0/5</div>
+            <div class="stat-progress">
+              <div id="missionProgressBar" class="stat-bar" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-title">TIME SPENT LEARNING</div>
+            <div class="stat-value" id="timeSpent">0 min</div>
+          </div>
+        </div>
+        
+        <h2>Security Risk Assessment</h2>
+        <p>These areas may need your guidance:</p>
+        
+        <ul class="risk-list">
+          <li class="risk-item risk-high">
+            <div class="risk-header">
+              <span class="risk-title">Password Sharing</span>
+              <span class="risk-badge badge-high">High Risk</span>
+            </div>
+            <p>Your child may be sharing passwords with friends. Talk to them about why this is dangerous.</p>
+          </li>
+          
+          <li class="risk-item risk-medium">
+            <div class="risk-header">
+              <span class="risk-title">App Permissions</span>
+              <span class="risk-badge badge-medium">Medium Risk</span>
+            </div>
+            <p>Some apps on your child's devices have excessive permissions. Review these together.</p>
+          </li>
+          
+          <li class="risk-item risk-low">
+            <div class="risk-header">
+              <span class="risk-title">Screen Time</span>
+              <span class="risk-badge badge-low">Low Risk</span>
+            </div>
+            <p>Your child's screen time is within reasonable limits, but continue to monitor usage.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Add the User Dashboard Screen -->
+  <div id="userDashboard" class="screen hidden">
+    <div class="dashboard-container">
+      <div class="dashboard-header">
+        <div class="avatar-container">
+          <img id="dashboardAvatar" src="cyber_cat.png" alt="Cyber Cat">
+          <div class="level-badge">Level 1</div>
+        </div>
+        <div class="header-text">
+          <h2>Security Missions</h2>
+          <div class="security-score">
+            <div class="progress-container">
+              <div id="dashboardProgress" class="progress-bar"></div>
+            </div>
+            <span id="dashboardScore">0/100</span>
+          </div>
+        </div>
+        <button id="chatButton" class="primary-button">
+          <span class="button-icon">💬</span>
+          Chat with Assistant
+        </button>
+      </div>
+      
+      <div class="dashboard-content">
+        <div class="achievements-bar">
+          <div class="achievement">
+            <span class="achievement-icon">🔒</span>
+            <span class="achievement-text">Password Master</span>
+          </div>
+          <div class="achievement">
+            <span class="achievement-icon">🛡️</span>
+            <span class="achievement-text">Privacy Guardian</span>
+          </div>
+          <div class="achievement">
+            <span class="achievement-icon">🎣</span>
+            <span class="achievement-text">Phishing Detective</span>
+          </div>
+        </div>
+        
+        <div class="mission-grid">
+          <!-- Password Mission -->
+          <div class="mission-card" data-mission="passwords">
+            <div class="mission-image">🔑</div>
+            <div class="mission-content">
+              <h3 class="mission-title">Password Protector</h3>
+              <p class="mission-desc">Learn how to create strong passwords and keep your accounts secure.</p>
+              <div class="mission-status">
+                <span>0% Complete</span>
+                <span>0/3 Tasks</span>
+              </div>
+              <div class="mission-progress">
+                <div class="mission-progress-bar" style="width: 0%"></div>
+              </div>
+              <button class="mission-action">Start Mission</button>
+            </div>
+          </div>
+          
+          <!-- Privacy Mission -->
+          <div class="mission-card" data-mission="privacy">
+            <div class="mission-image">🛡️</div>
+            <div class="mission-content">
+              <h3 class="mission-title">Privacy Guardian</h3>
+              <p class="mission-desc">Discover how to protect your personal information online.</p>
+              <div class="mission-status">
+                <span>0% Complete</span>
+                <span>0/3 Tasks</span>
+              </div>
+              <div class="mission-progress">
+                <div class="mission-progress-bar" style="width: 0%"></div>
+              </div>
+              <button class="mission-action">Start Mission</button>
+            </div>
+          </div>
+          
+          <!-- Phishing Mission -->
+          <div class="mission-card" data-mission="phishing">
+            <div class="mission-image">🎣</div>
+            <div class="mission-content">
+              <h3 class="mission-title">Phishing Detective</h3>
+              <p class="mission-desc">Learn to identify and avoid phishing attempts and scams.</p>
+              <div class="mission-status">
+                <span>0% Complete</span>
+                <span>0/3 Tasks</span>
+              </div>
+              <div class="mission-progress">
+                <div class="mission-progress-bar" style="width: 0%"></div>
+              </div>
+              <button class="mission-action">Start Mission</button>
+            </div>
+          </div>
+          
+          <!-- Updates Mission -->
+          <div class="mission-card" data-mission="updates">
+            <div class="mission-image">🔄</div>
+            <div class="mission-content">
+              <h3 class="mission-title">Update Master</h3>
+              <p class="mission-desc">Understand why updates are important for your security.</p>
+              <div class="mission-status">
+                <span>0% Complete</span>
+                <span>0/3 Tasks</span>
+              </div>
+              <div class="mission-progress">
+                <div class="mission-progress-bar" style="width: 0%"></div>
+              </div>
+              <button class="mission-action">Start Mission</button>
+            </div>
+          </div>
+          
+          <!-- Online Safety Mission -->
+          <div class="mission-card" data-mission="online_safety">
+            <div class="mission-image">🔍</div>
+            <div class="mission-content">
+              <h3 class="mission-title">Safe Explorer</h3>
+              <p class="mission-desc">Navigate the web safely and avoid dangerous content.</p>
+              <div class="mission-status">
+                <span>0% Complete</span>
+                <span>0/3 Tasks</span>
+              </div>
+              <div class="mission-progress">
+                <div class="mission-progress-bar" style="width: 0%"></div>
+              </div>
+              <button class="mission-action">Start Mission</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification Permission Prompt -->
+  <div id="notificationPrompt" class="notification-prompt hidden">
+    <div class="notification-icon">🔔</div>
+    <div class="notification-content">
+      <div class="notification-title">Stay Updated!</div>
+      <p>Enable notifications to receive security tips and track your progress</p>
+      <div class="notification-actions">
+        <button class="notification-accept" id="notificationAccept">Enable</button>
+        <button class="notification-dismiss" id="notificationDismiss">Not Now</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- PWA Install Banner -->
+  <div id="installBanner" class="install-banner hidden">
+    <div class="install-content">
+      <div class="install-icon">📱</div>
+      <div class="install-text">
+        <h3>Install Cyber Cat</h3>
+        <p>Add to your home screen for the best experience</p>
+      </div>
+    </div>
+    <div class="install-actions">
+      <button id="installBannerBtn" class="notification-accept">Install</button>
+      <button id="closeBanner" class="notification-dismiss">Later</button>
+    </div>
+  </div>
 
   <!-- Chat Screen -->
   <div id="chatScreen" class="screen hidden">
     <div class="chat-container">
-      <!-- Chat Header -->
       <div class="chat-header">
         <div class="avatar-container">
           <img id="chatAvatar" src="cyber_cat.png" alt="Cyber Cat">
         </div>
+        
         <div class="header-text">
           <h2>Cyber Cat</h2>
           <div class="security-score">
@@ -317,8 +363,19 @@
         </div>
       </div>
       
-      <!-- Chat Messages -->
       <div id="chatMessages" class="messages-container"></div>
+      
+      <div class="chat-input-container">
+        <form id="chatInputForm" class="chat-input-form">
+          <input type="text" id="chatInput" placeholder="Type your security question...">
+          <button type="submit" id="sendButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
